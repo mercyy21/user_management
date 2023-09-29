@@ -4,10 +4,7 @@ import com.example.demo.dao.UserEntity;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
@@ -32,5 +29,18 @@ public class UserController {
     public ResponseEntity<String> loginPerson(@RequestBody UserEntity userEntity){
         return userService.loginUser(userEntity.getEmail(),userEntity.getPassword());
     }
+    //update users password
+    @PutMapping("{id}")
+    public ResponseEntity<String> updatePersonsPassword(@PathVariable Long id,@RequestParam String currentPassword, @RequestParam String newPassword){
+        return userService.updateUsersPassword(id, currentPassword, newPassword);
+
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<String> logoutPerson(){
+        return userService.logout();
+    }
+
+
 
 }

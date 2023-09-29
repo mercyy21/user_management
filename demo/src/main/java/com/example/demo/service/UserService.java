@@ -35,40 +35,31 @@ public class UserService {
     return ResponseEntity.ok(savedUser);
     }
 
-    //Update last time logged in
-    /*public void updateLastLoginTime(UserEntity userEntity){
-    LocalDateTime localDateTime = LocalDateTime.now();
-    UserEntity userEntity1 = userRepository.findByEmail(userEntity.getEmail());
-    userEntity.setLastLoginTime(localDateTime);
-    }*/
-
     //login user
     public ResponseEntity<String> loginUser(String email,String password) {
         UserEntity userEntity = userRepository.findByEmail(email);
-
         if (userEntity != null) {
             if (BCrypt.checkpw(password, userEntity.getPassword())) {
                 userEntity.setLastLoginTime(new Date());
                 userRepository.save(userEntity);
                 return new ResponseEntity<>(" Login Successful", HttpStatus.OK);
-
             }
-
-            return new ResponseEntity<>("Unsuccessful",HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Incorrect Password",HttpStatus.BAD_REQUEST);
         }
         return new ResponseEntity<>("User not found", HttpStatus.NOT_FOUND);
 
-        } //Create an update last time logged in function
+        }
 
     //update users password
     public ResponseEntity<String> updateUsersPassword(Long id,String currentPassword, String newPassword){
     UserEntity userEntity = userRepository.findById(id).orElse(null);
     if(userEntity != null){
-        if(BCrypt.checkpw(currentPassword,userEntity.getSalt())){
+        if(BCrypt.checkpw(currentPassword,userEntity.getPassword())){
             String salt = BCrypt.gensalt();//generates the salt
             String hashedPassword= BCrypt.hashpw(newPassword,salt);
             userEntity.setSalt(salt);
             userEntity.setPassword(hashedPassword);
+            userRepository.save(userEntity);
             return ResponseEntity.ok("Successful");
         }
         return new ResponseEntity<>("Current password incorrect",HttpStatus.BAD_REQUEST);
@@ -77,6 +68,10 @@ public class UserService {
         return new ResponseEntity<>("User doesn't exist",HttpStatus.NOT_FOUND);
     }
 
+    }
+    //Logout
+    public ResponseEntity<String> logout(){
+    return new ResponseEntity<>("Logout successful", HttpStatus.OK);
     }
 
     }
