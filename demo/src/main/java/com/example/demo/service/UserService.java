@@ -47,8 +47,9 @@ public class UserService {
         UserEntity userEntity = userRepository.findByEmail(email);
 
         if (userEntity != null) {
-            userEntity.setLastLoginTime(new Date());
             if (BCrypt.checkpw(password, userEntity.getPassword())) {
+                userEntity.setLastLoginTime(new Date());
+                userRepository.save(userEntity);
                 return new ResponseEntity<>(" Login Successful", HttpStatus.OK);
 
             }
