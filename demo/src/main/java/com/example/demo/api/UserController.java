@@ -31,8 +31,8 @@ public class UserController {
     }
     //update users password
     @PutMapping("{id}")
-    public ResponseEntity<String> updatePersonsPassword(@PathVariable Long id,@RequestParam String currentPassword, @RequestParam String newPassword){
-        return userService.updateUsersPassword(id, currentPassword, newPassword);
+    public ResponseEntity<String> updatePersonsPassword(@PathVariable Long id,@RequestBody UpdatePasswordRequest request){
+        return userService.updateUsersPassword(id, request.getCurrentPassword(), request.getNewPassword());
 
     }
 
