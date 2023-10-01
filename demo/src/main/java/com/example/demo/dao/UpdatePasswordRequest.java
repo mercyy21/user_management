@@ -1,4 +1,4 @@
-package com.example.demo.api;
+package com.example.demo.dao;
 
 public class UpdatePasswordRequest {
     private String currentPassword;

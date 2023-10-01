@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.dao.UserDTO;
 import com.example.demo.dao.UserEntity;
 import com.example.demo.dao.UserRepository;
 import org.jetbrains.annotations.NotNull;
@@ -21,16 +22,29 @@ public class UserService {
     }
 
     //Register User
-    public ResponseEntity<UserEntity> registerUser(@NotNull UserEntity userEntity){
+    public ResponseEntity<UserDTO> registerUser(@NotNull UserEntity userEntity){
+
+    //Hashes the password
     String salt = BCrypt.gensalt();//generates the salt
     String hashedPassword= BCrypt.hashpw(userEntity.getPassword(),salt);
     userEntity.setSalt(salt);
     userEntity.setPassword(hashedPassword);
+
+    //Checks if the email or phone number already exist
     if(userRepository.existsByEmail(userEntity.getEmail()) || userRepository.existsByPhoneNumber(userEntity.getPhoneNumber())){
         return new ResponseEntity<>(HttpStatus.CONFLICT);
     }
     UserEntity savedUser = userRepository.save(userEntity);
-    return ResponseEntity.ok(savedUser);
+
+    //Map Saved user to User DTO
+    //To customize what appears on the Json Request
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(savedUser.getId());
+        userDTO.setName(savedUser.getName());
+        userDTO.setEmail(savedUser.getEmail());
+        userDTO.setPhoneNumber(savedUser.getPhoneNumber());
+    return ResponseEntity.status(HttpStatus.CREATED)
+            .body(userDTO);
     }
 
     //login user

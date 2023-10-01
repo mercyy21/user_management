@@ -1,5 +1,7 @@
 package com.example.demo.api;
 
+import com.example.demo.dao.UpdatePasswordRequest;
+import com.example.demo.dao.UserDTO;
 import com.example.demo.dao.UserEntity;
 import com.example.demo.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,8 @@ public class UserController {
     }
     //Register user
     @PostMapping
-    public ResponseEntity<UserEntity> registerPerson(@RequestBody UserEntity userEntity){
+    public ResponseEntity<UserDTO> registerPerson(@RequestBody UserEntity userEntity){
+
         return userService.registerUser(userEntity);
 
     }
